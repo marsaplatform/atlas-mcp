@@ -28,6 +28,10 @@ export class DemoRepository implements AtlasRepository {
       .slice(0, input.limit);
   }
 
+  async all(): Promise<AnyAtlasRecord[]> {
+    return allRecords;
+  }
+
   async getById(id: string): Promise<AnyAtlasRecord | undefined> {
     return allRecords.find((record) => record.id === id);
   }

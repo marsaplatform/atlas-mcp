@@ -1,32 +1,62 @@
 {
   "name": "@marsaplatform/atlas",
-  "version": "0.1.0",
-  "description": "Source-grounded migration services, evidence, and referral infrastructure for Egypt.",
+  "version": "0.2.0",
+  "description": "Marsa Atlas MCP (أطلس مرسى) — source-grounded migration services, legal references and data for Egypt, as an MCP server on Cloudflare Workers, plus the Atlas web/REST service.",
   "type": "module",
   "license": "MIT",
   "private": false,
-  "engines": { "bun": ">=1.2.0" },
-  "bin": { "marsa-atlas": "dist/cli.js" },
-  "files": ["dist", "data", "README.md", "LICENSE"],
+  "engines": {
+    "bun": ">=1.2.0"
+  },
+  "bin": {
+    "marsa-atlas": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "data",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "dev": "bun run src/cli.ts",
     "dev:http": "bun run src/cli.ts --http",
+    "dev:worker": "wrangler dev",
     "build": "bun build src/cli.ts --outdir dist --target bun --sourcemap",
+    "build:worker": "bun --bun wrangler deploy --dry-run --outdir .wrangler/dist",
+    "deploy": "wrangler deploy",
+    "inspect": "npx @modelcontextprotocol/inspector bun run src/cli.ts",
     "typecheck": "tsc --noEmit",
     "test": "bun test",
     "check": "bun run typecheck && bun test && bun run build",
     "start": "bun run dist/cli.js"
   },
   "dependencies": {
+    "@cfworker/json-schema": "^4.1.1",
     "@modelcontextprotocol/sdk": "1.29.0",
     "zod": "4.3.5"
   },
   "devDependencies": {
     "@types/bun": "latest",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "wrangler": "^4"
   },
-  "repository": { "type": "git", "url": "git+https://github.com/marsaplatform/marsa-atlas.git" },
-  "homepage": "https://atlas.marsaplatform.com",
-  "bugs": { "url": "https://github.com/marsaplatform/marsa-atlas/issues" },
-  "keywords": ["mcp", "egypt", "migration", "refugees", "humanitarian", "arabic", "open-data"]
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marsaplatform/atlas-mcp.git"
+  },
+  "homepage": "https://github.com/marsaplatform/atlas-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/marsaplatform/atlas-mcp/issues"
+  },
+  "keywords": [
+    "arabic",
+    "cloudflare-workers",
+    "egypt",
+    "humanitarian",
+    "mcp",
+    "migration",
+    "model-context-protocol",
+    "open-data",
+    "refugees"
+  ]
 }

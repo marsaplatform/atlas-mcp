@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "marsa-atlas-local": {
+      "command": "bun",
+      "args": ["run", "/absolute/path/to/atlas-mcp/src/cli.ts"],
+      "env": {
+        "ATLAS_DATA_MODE": "api",
+        "ATLAS_API_URL": "https://atlas.marsaplatform.com"
+      }
+    }
+  }
+}

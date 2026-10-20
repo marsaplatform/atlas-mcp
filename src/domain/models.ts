@@ -9,6 +9,23 @@ export interface SourceRef {
   retrievedAt: string;
 }
 
+export interface ContactInfo {
+  phone?: string;
+  email?: string;
+  website?: string;
+  whatsapp?: string;
+  url?: string;
+  address?: string;
+  hours?: string;
+}
+
+export interface IndicatorValue {
+  value: string;
+  unit?: string;
+  period?: string;
+  methodology?: string;
+}
+
 export interface AtlasRecord {
   id: string;
   type: RecordType;
@@ -21,6 +38,13 @@ export interface AtlasRecord {
   recordStatus: "source_backed" | "community_submitted" | "demo";
   coverageNotes: string[];
   tags: string[];
+  /** Canonical public page for the record on marsaplatform.com, when known. */
+  url?: string;
+  /** Governorates the record is attached to (services and organizations). */
+  governorates?: string[];
+  contact?: ContactInfo;
+  indicator?: IndicatorValue;
+  downloadUrl?: string;
 }
 
 export interface ServiceRecord extends AtlasRecord {
@@ -30,7 +54,7 @@ export interface ServiceRecord extends AtlasRecord {
   governorates: string[];
   eligibility: string[];
   requirements: string[];
-  contact?: { phone?: string; url?: string };
+  cost?: string;
 }
 
 export interface LegalRecord extends AtlasRecord {
@@ -58,4 +82,10 @@ export interface ServiceSearchInput {
   governorate?: string | undefined;
   eligibility?: string | undefined;
   limit: number;
+}
+
+export interface Coverage {
+  records: number;
+  byType: Record<string, number>;
+  lastUpdated: string;
 }

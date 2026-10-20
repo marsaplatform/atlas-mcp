@@ -48,3 +48,10 @@ describe("WordPressRepository", () => {
     expect(results[0]?.title).toBe("دعم نفسي");
   });
 });
+
+test("preserves explicit illustrative source status", async () => {
+ const demo={...payload,items:payload.items.map(x=>({...x,meta:{...x.meta,record_status:"demo"}}))};
+ const repository=new WordPressRepository("https://example.org",async()=>new Response(JSON.stringify(demo)));
+ const results=await repository.findServices({need:"تعليم",limit:5});
+ expect(results[0]?.recordStatus).toBe("demo");
+});

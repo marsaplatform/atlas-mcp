@@ -2,6 +2,7 @@ import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import { AtlasService } from "../src/application/atlas-service";
 import { DemoRepository } from "../src/infrastructure/demo-repository";
 import { startHttpServer } from "../src/interfaces/http";
+import { ATLAS_VERSION } from "../src/application/atlas-service";
 
 describe("health probes", () => {
   let server: ReturnType<typeof Bun.serve>;
@@ -20,7 +21,7 @@ describe("health probes", () => {
       const body = await response.json();
 
       expect(response.status).toBe(200);
-      expect(body).toEqual({ ok: true, service: "marsa-atlas", version: "0.1.0" });
+      expect(body).toEqual({ ok: true, service: "marsa-atlas", version: ATLAS_VERSION });
       expect(response.headers.get("cache-control")).toBe("no-store");
     });
   }

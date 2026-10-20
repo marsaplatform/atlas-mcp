@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { AnyAtlasRecord, RecordType, ServiceRecord } from "../domain/models";
+import type { AnyAtlasRecord, Coverage, RecordType, ServiceRecord } from "../domain/models";
 import type { AtlasRepository } from "../domain/repository";
 
 const termSchema = z.object({ name: z.string(), slug: z.string() });
@@ -36,6 +36,15 @@ const source = (item: WordPressItem) => ({
   retrievedAt: new Date().toISOString().slice(0, 10),
 });
 
+const contactOf = (item: WordPressItem) => {
+  const contact: Record<string, string> = { url: item.url };
+  for (const key of ["phone", "email", "website", "whatsapp", "address", "hours"] as const) {
+    const value = item.meta[key]?.trim();
+    if (value) contact[key] = value;
+  }
+  return contact;
+};
+
 const baseRecord = (item: WordPressItem) => ({
   id: `wp:${item.type}:${item.id}`,
   type: typeMap[item.type] ?? "source" as RecordType,
@@ -48,6 +57,7 @@ const baseRecord = (item: WordPressItem) => ({
   recordStatus: item.meta.record_status === "demo" ? "demo" as const : item.meta.record_status === "source_backed" ? "source_backed" as const : "community_submitted" as const,
   coverageNotes: item.last_verified ? [] : ["لا يتوفر تاريخ تحقق لهذا السجل."],
   tags: Object.values(item.terms).flat().map((term) => term.name),
+  url: item.url,
 });
 
 const mapItem = (item: WordPressItem): AnyAtlasRecord => {
@@ -61,7 +71,8 @@ const mapItem = (item: WordPressItem): AnyAtlasRecord => {
       governorates: termNames(item, "marsa_governorate"),
       eligibility: termNames(item, "marsa_eligibility"),
       requirements: item.meta.documents ? [item.meta.documents] : [],
-      contact: { ...(item.meta.phone ? { phone: item.meta.phone } : {}), url: item.url },
+      contact: contactOf(item),
+      ...(item.meta.cost ? { cost: item.meta.cost } : {}),
     };
   }
   if (base.type === "legal") {
@@ -74,7 +85,17 @@ const mapItem = (item: WordPressItem): AnyAtlasRecord => {
       ...(item.meta.issued_date ? { effectiveDate: item.meta.issued_date } : {}),
     };
   }
-  return { ...base, type: base.type as Exclude<RecordType, "service" | "legal"> };
+  const governorates = termNames(item, "marsa_governorate");
+  return {
+    ...base,
+    type: base.type as Exclude<RecordType, "service" | "legal">,
+    ...(governorates.length ? { governorates } : {}),
+    ...(base.type === "organization" ? { contact: contactOf(item) } : {}),
+    ...(item.meta.indicator_value
+      ? { indicator: { value: item.meta.indicator_value, ...(item.meta.indicator_unit ? { unit: item.meta.indicator_unit } : {}), ...(item.meta.indicator_period ? { period: item.meta.indicator_period } : {}), ...(item.meta.methodology ? { methodology: item.meta.methodology } : {}) } }
+      : {}),
+    ...(item.meta.download_url ? { downloadUrl: item.meta.download_url } : {}),
+  };
 };
 
 export class WordPressRepository implements AtlasRepository {
@@ -114,16 +135,16 @@ export class WordPressRepository implements AtlasRepository {
     return data.items.map(mapItem).filter((item): item is ServiceRecord => item.type === "service");
   }
 
-  async getById(id: string): Promise<AnyAtlasRecord | undefined> {
-    const [, type, numericId] = id.split(":");
-    if (!type || !numericId) return undefined;
+  async all(): Promise<AnyAtlasRecord[]> {
     const data = await this.request("search", { per_page: 100 });
-    return data.items.find((item) => item.type === type && String(item.id) === numericId)
-      ? mapItem(data.items.find((item) => item.type === type && String(item.id) === numericId)!)
-      : undefined;
+    return data.items.map(mapItem);
   }
 
-  async coverage(): Promise<{ records: number; byType: Record<string, number>; lastUpdated: string }> {
+  async getById(id: string): Promise<AnyAtlasRecord | undefined> {
+    return (await this.all()).find((record) => record.id === id);
+  }
+
+  async coverage(): Promise<Coverage> {
     const data = await this.request("search", { per_page: 100 });
     const records = data.items.map(mapItem);
     return {

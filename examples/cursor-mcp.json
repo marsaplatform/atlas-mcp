@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "marsa-atlas": {
+      "url": "https://atlas.marsaplatform.com/mcp"
+    }
+  }
+}

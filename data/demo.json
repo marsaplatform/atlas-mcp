@@ -6,17 +6,41 @@
     "summary": "خدمات تعليمية في القاهرة للاجئين والمهاجرين مع ضرورة التواصل لتأكيد شروط القبول الحالية.",
     "countryCode": "EG",
     "language": "ar",
-    "source": { "name": "Marsa Service Directory", "url": "https://marsaplatform.com/services/", "publisher": "Marsa Egypt", "retrievedAt": "2026-08-14T00:00:00Z" },
+    "source": {
+      "name": "Marsa Service Directory",
+      "url": "https://marsaplatform.com/services/",
+      "publisher": "Marsa Egypt",
+      "retrievedAt": "2026-08-14T00:00:00Z"
+    },
     "lastVerified": "2026-08-13",
     "recordStatus": "source_backed",
-    "coverageNotes": ["الأهلية النهائية تحددها الجهة المقدمة للخدمة."],
-    "tags": ["تعليم", "القاهرة", "تعليم الكبار"],
+    "coverageNotes": [
+      "الأهلية النهائية تحددها الجهة المقدمة للخدمة."
+    ],
+    "tags": [
+      "تعليم",
+      "القاهرة",
+      "تعليم الكبار"
+    ],
     "organizationId": "org-stars",
-    "serviceTypes": ["تعليم"],
-    "governorates": ["القاهرة"],
-    "eligibility": ["لاجئون", "مهاجرون", "سودانيون"],
-    "requirements": ["التواصل المسبق", "مستند هوية متاح إن وجد"],
-    "contact": { "url": "https://marsaplatform.com/network/" }
+    "serviceTypes": [
+      "تعليم"
+    ],
+    "governorates": [
+      "القاهرة"
+    ],
+    "eligibility": [
+      "لاجئون",
+      "مهاجرون",
+      "سودانيون"
+    ],
+    "requirements": [
+      "التواصل المسبق",
+      "مستند هوية متاح إن وجد"
+    ],
+    "contact": {
+      "url": "https://marsaplatform.com/network/"
+    }
   },
   {
     "id": "legal-education-1",
@@ -25,12 +49,26 @@
     "summary": "مدخل بحثي للمصدر القانوني المتعلق بحق الطفل في التعليم الأساسي داخل مصر.",
     "countryCode": "EG",
     "language": "ar",
-    "source": { "name": "المصدر القانوني المنشور في مرسى", "url": "https://marsaplatform.com/legal/", "publisher": "Marsa Egypt", "retrievedAt": "2026-08-14T00:00:00Z" },
+    "source": {
+      "name": "المصدر القانوني المنشور في مرسى",
+      "url": "https://marsaplatform.com/legal/",
+      "publisher": "Marsa Egypt",
+      "retrievedAt": "2026-08-14T00:00:00Z"
+    },
     "lastVerified": "2026-08-13",
     "recordStatus": "source_backed",
-    "coverageNotes": ["هذا الملخص ليس استشارة قانونية.", "يجب الرجوع إلى النص الرسمي الكامل."],
-    "tags": ["تعليم", "أطفال", "مصر"],
-    "legalTopics": ["التعليم"],
+    "coverageNotes": [
+      "هذا الملخص ليس استشارة قانونية.",
+      "يجب الرجوع إلى النص الرسمي الكامل."
+    ],
+    "tags": [
+      "تعليم",
+      "أطفال",
+      "مصر"
+    ],
+    "legalTopics": [
+      "التعليم"
+    ],
     "instrument": "دستور وتشريعات التعليم"
   },
   {
@@ -40,10 +78,158 @@
     "summary": "جهة مدرجة في شبكة مرسى وتقدم خدمات من بينها برامج تعليمية.",
     "countryCode": "EG",
     "language": "ar",
-    "source": { "name": "Marsa Network", "url": "https://marsaplatform.com/network/", "publisher": "Marsa Egypt", "retrievedAt": "2026-08-14T00:00:00Z" },
+    "source": {
+      "name": "Marsa Network",
+      "url": "https://marsaplatform.com/network/",
+      "publisher": "Marsa Egypt",
+      "retrievedAt": "2026-08-14T00:00:00Z"
+    },
     "lastVerified": "2026-08-13",
     "recordStatus": "source_backed",
-    "coverageNotes": ["راجع صفحة الجهة للتواصل والخدمات الحالية."],
-    "tags": ["تعليم", "القاهرة", "منظمة", "مصر"]
+    "coverageNotes": [
+      "راجع صفحة الجهة للتواصل والخدمات الحالية."
+    ],
+    "tags": [
+      "تعليم",
+      "القاهرة",
+      "منظمة",
+      "مصر"
+    ],
+    "governorates": [
+      "القاهرة"
+    ],
+    "contact": {
+      "url": "https://marsaplatform.com/network/"
+    }
+  },
+  {
+    "id": "service-mental-health-1",
+    "type": "service",
+    "title": "جلسات دعم نفسي جماعي",
+    "summary": "جلسات دعم نفسي واجتماعي جماعية في الجيزة، مع تأكيد المواعيد مسبقًا.",
+    "countryCode": "EG",
+    "language": "ar",
+    "source": {
+      "name": "Marsa Service Directory",
+      "url": "https://marsaplatform.com/services/",
+      "publisher": "Marsa Egypt",
+      "retrievedAt": "2026-08-14T00:00:00Z"
+    },
+    "lastVerified": "2026-08-05",
+    "recordStatus": "demo",
+    "coverageNotes": [
+      "سجل توضيحي للاختبار وليس دليلًا تشغيليًا."
+    ],
+    "tags": [
+      "دعم نفسي",
+      "الجيزة"
+    ],
+    "organizationId": "org-stars",
+    "serviceTypes": [
+      "دعم نفسي"
+    ],
+    "governorates": [
+      "الجيزة"
+    ],
+    "eligibility": [
+      "سوريون",
+      "نساء"
+    ],
+    "requirements": [
+      "حجز موعد مسبق"
+    ],
+    "contact": {
+      "url": "https://marsaplatform.com/services/",
+      "phone": "0000"
+    },
+    "cost": "مجاني"
+  },
+  {
+    "id": "service-legal-1",
+    "type": "service",
+    "title": "استشارة قانونية حول الإقامة",
+    "summary": "استشارات قانونية عن تجديد الإقامة وتسجيل المواليد في الإسكندرية.",
+    "countryCode": "EG",
+    "language": "ar",
+    "source": {
+      "name": "Marsa Service Directory",
+      "url": "https://marsaplatform.com/services/",
+      "publisher": "Marsa Egypt",
+      "retrievedAt": "2026-08-14T00:00:00Z"
+    },
+    "lastVerified": "2025-01-10",
+    "recordStatus": "demo",
+    "coverageNotes": [],
+    "tags": [
+      "مساعدة قانونية",
+      "إقامة",
+      "الإسكندرية"
+    ],
+    "organizationId": "org-aman",
+    "serviceTypes": [
+      "مساعدة قانونية"
+    ],
+    "governorates": [
+      "الإسكندرية"
+    ],
+    "eligibility": [
+      "جميع الجنسيات"
+    ],
+    "requirements": [
+      "صورة جواز السفر إن وجد"
+    ],
+    "contact": {
+      "url": "https://marsaplatform.com/services/"
+    }
+  },
+  {
+    "id": "indicator-services-1",
+    "type": "indicator",
+    "title": "الخدمات المدرجة في الدليل",
+    "summary": "مؤشر توضيحي لعدد الخدمات المنشورة.",
+    "countryCode": "EG",
+    "language": "ar",
+    "source": {
+      "name": "Marsa",
+      "url": "https://marsaplatform.com/",
+      "publisher": "Marsa Egypt",
+      "retrievedAt": "2026-08-14T00:00:00Z"
+    },
+    "lastVerified": "2026-09-25",
+    "recordStatus": "demo",
+    "coverageNotes": [
+      "مؤشر توضيحي ولا يمثل إحصاءً رسميًا."
+    ],
+    "tags": [
+      "الخدمات"
+    ],
+    "indicator": {
+      "value": "3",
+      "unit": "خدمة منشورة",
+      "period": "سبتمبر 2026",
+      "methodology": "حصر آلي للسجلات المنشورة."
+    }
+  },
+  {
+    "id": "dataset-services-1",
+    "type": "dataset",
+    "title": "دليل الخدمات التجريبي",
+    "summary": "نسخة قابلة للتوسعة من بيانات الخدمات والجهات والمواقع.",
+    "countryCode": "EG",
+    "language": "ar",
+    "source": {
+      "name": "Marsa",
+      "url": "https://marsaplatform.com/",
+      "publisher": "Marsa Egypt",
+      "retrievedAt": "2026-08-14T00:00:00Z"
+    },
+    "lastVerified": "2026-08-08",
+    "recordStatus": "demo",
+    "coverageNotes": [],
+    "tags": [
+      "بيانات",
+      "خدمات"
+    ],
+    "downloadUrl": "https://atlas.marsaplatform.com/api/v1/records"
   }
 ]

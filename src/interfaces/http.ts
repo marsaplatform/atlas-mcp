@@ -1,20 +1,34 @@
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
-import type { AtlasService } from "../application/atlas-service";
+import { ATLAS_VERSION, type AtlasService } from "../application/atlas-service";
 import { createMcpServer } from "./mcp";
+import { recordTypes, type RecordType } from "../domain/models";
 import { landing, type LandingState } from "./landing";
 import stylesheet from "./landing.css" with { type: "text" };
 import browserScript from "./atlas-browser.js" with { type: "text" };
 
 const json = (value: unknown, status = 200): Response => Response.json(value, { status, headers: { "access-control-allow-origin": "*", "cache-control": "no-store" } });
 
-export function startHttpServer(service: AtlasService, port: number): ReturnType<typeof Bun.serve> {
+export interface HttpOptions {
+  /**
+   * Serve MCP in-process at `/mcp`. Off by default since 0.2.0: the public MCP
+   * endpoint runs on Cloudflare Workers (src/worker.ts) and is mounted on
+   * https://atlas.marsaplatform.com/mcp by a zone route. Set ATLAS_HTTP_MCP=1
+   * for self-hosting or to roll back to the in-process endpoint.
+   */
+  mcp?: boolean;
+  publicMcpUrl?: string;
+}
+
+const recordTypeSet = new Set<string>(recordTypes);
+
+export function startHttpServer(service: AtlasService, port: number, options: HttpOptions = {}): ReturnType<typeof Bun.serve> {
   return Bun.serve({
     port,
     async fetch(request) {
       const url = new URL(request.url);
       if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: { "access-control-allow-origin": "*", "access-control-allow-methods": "GET,POST,OPTIONS", "access-control-allow-headers": "content-type,mcp-protocol-version" } });
       if (["/health", "/healthz", "/readyz"].includes(url.pathname)) {
-        return json({ ok: true, service: "marsa-atlas", version: "0.1.0" });
+        return json({ ok: true, service: "marsa-atlas", version: ATLAS_VERSION });
       }
       if (url.pathname === "/api/v1/coverage" && request.method === "GET") return json(await service.coverage());
       if (url.pathname === "/api/v1/search" && request.method === "GET") {
@@ -26,6 +40,23 @@ export function startHttpServer(service: AtlasService, port: number): ReturnType
         const need = url.searchParams.get("need")?.trim() ?? "";
         if (need.length < 2) return json({ error: "need must contain at least 2 characters" }, 400);
         return json(await service.findServices({ need, governorate: url.searchParams.get("governorate") ?? undefined, eligibility: url.searchParams.get("eligibility") ?? undefined, limit: 20 }));
+      }
+      if (url.pathname === "/api/v1/records" && request.method === "GET") {
+        const type = url.searchParams.get("type") ?? "";
+        if (type && !recordTypeSet.has(type)) return json({ error: `type must be one of ${recordTypes.join(", ")}` }, 400);
+        const limit = Math.max(1, Math.min(Number(url.searchParams.get("limit") ?? 100) || 100, 500));
+        const offset = Math.max(0, Number(url.searchParams.get("offset") ?? 0) || 0);
+        return json(await service.listRecords({ type: (type || undefined) as RecordType | undefined, limit, offset }));
+      }
+      if (url.pathname.startsWith("/api/v1/records/") && request.method === "GET") {
+        const id = decodeURIComponent(url.pathname.slice("/api/v1/records/".length));
+        const record = id ? (await service.getRecord(id)) : undefined;
+        if (!record?.found) return json({ error: "not_found", id }, 404);
+        return json(record.record);
+      }
+      if (url.pathname === "/mcp" && !options.mcp) {
+        const location = options.publicMcpUrl ?? "https://atlas.marsaplatform.com/mcp";
+        return json({ error: "gone", message: `The Atlas MCP endpoint is served by Cloudflare Workers at ${location}. Set ATLAS_HTTP_MCP=1 to serve MCP from this process.`, mcp: location }, 410);
       }
       if (url.pathname === "/mcp") {
         const server = createMcpServer(service);

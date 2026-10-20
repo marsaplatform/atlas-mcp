@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "marsa-atlas": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://atlas.marsaplatform.com/mcp"]
+    }
+  }
+}

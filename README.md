@@ -70,6 +70,29 @@ https://atlas.marsaplatform.com/mcp
 - **Cursor:** انسخ [examples/cursor-mcp.json](examples/cursor-mcp.json) إلى `~/.cursor/mcp.json`.
 - **Claude Desktop:** [examples/claude-desktop-config.json](examples/claude-desktop-config.json) (عبر `mcp-remote`) أو تشغيل محلي بـ stdio: [examples/claude-desktop-local.json](examples/claude-desktop-local.json).
 
+**Claude Desktop** (`claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "marsa-atlas": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://atlas.marsaplatform.com/mcp"]
+    }
+  }
+}
+```
+
+**Cursor** (`~/.cursor/mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "marsa-atlas": { "url": "https://atlas.marsaplatform.com/mcp" }
+  }
+}
+```
+
 ### أمثلة أسئلة
 
 - «أحتاج دعم نفسي في القاهرة لسيدة سودانية، جهّز ورقة إحالة.»
@@ -158,6 +181,31 @@ https://atlas.marsaplatform.com/mcp
 | Local stdio | [examples/claude-desktop-local.json](examples/claude-desktop-local.json) |
 | Raw HTTP / SDKs | [examples/http-client.md](examples/http-client.md) |
 
+**Claude Desktop** — `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "marsa-atlas": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://atlas.marsaplatform.com/mcp"]
+    }
+  }
+}
+```
+
+**Cursor** — `~/.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "marsa-atlas": { "url": "https://atlas.marsaplatform.com/mcp" }
+  }
+}
+```
+
+Try: *"Find psychosocial support in Cairo for a Sudanese woman and build a referral sheet."* · *"Which governorates have no registered legal aid?"*
+
 ### Run locally
 
 Requires [Bun](https://bun.sh) ≥ 1.2 (and Node.js ≥ 22 for `wrangler dev`).
@@ -230,4 +278,12 @@ examples/                    client configs, HTTP examples, worked conversations
 `0.2.0` — see [CHANGELOG.md](CHANGELOG.md). The bundled Zad fonts are under the SIL Open Font
 License (`public/fonts/OFL.txt`). Code: [MIT](LICENSE). Record text belongs to its sources.
 
-Part of [Marsa](https://marsaplatform.com) · sibling project: Malja MCP (humanitarian open data).
+## مشاريع مرسى الشقيقة · Sibling Marsa projects
+
+| المشروع · Project | ما هو · What | الرابط · Link |
+|---|---|---|
+| **ERX · مرصد مصر البحثي** | أرشيف بحثي وخادم MCP للشأن العام المصري (21 أداة، مفتاح مجاني للنسخة المستضافة) · Egypt Research Commons, source-grounded MCP (free key for hosted) | <https://egypt-research.marsaplatform.com> · [GitHub](https://github.com/marsaplatform/erx-mcp) |
+| **Malja MCP · ملجأ** | بيانات إنسانية موثّقة: UNHCR والبنك الدولي وHDX وReliefWeb · trusted humanitarian open data | <https://spaces.marsaplatform.com/s/k3sb9ww3dj/> |
+| **Marsa Spaces · مساحات مرسى** | نشر صفحات ثابتة بروابط عامة، وخادم MCP لكل مساحة · static publishing with a per-space MCP server | <https://spaces.marsaplatform.com> · [GitHub](https://github.com/marsaplatform/marsa) |
+
+Part of [Marsa](https://marsaplatform.com) · all projects: <https://marsaplatform.com/products>.

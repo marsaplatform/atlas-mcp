@@ -45,7 +45,7 @@ const baseRecord = (item: WordPressItem) => ({
   language: "ar" as const,
   source: source(item),
   lastVerified: item.last_verified,
-  recordStatus: item.meta.record_status === "source_backed" ? "source_backed" as const : "community_submitted" as const,
+  recordStatus: item.meta.record_status === "demo" ? "demo" as const : item.meta.record_status === "source_backed" ? "source_backed" as const : "community_submitted" as const,
   coverageNotes: item.last_verified ? [] : ["لا يتوفر تاريخ تحقق لهذا السجل."],
   tags: Object.values(item.terms).flat().map((term) => term.name),
 });
@@ -87,7 +87,7 @@ export class WordPressRepository implements AtlasRepository {
   private async request(path: string, params: Record<string, string | number | undefined>) {
     const url = new URL(`${this.endpoint}/${path}`);
     Object.entries(params).forEach(([key, value]) => value !== undefined && url.searchParams.set(key, String(value)));
-    const response = await this.fetcher(url, { headers: { accept: "application/json" } });
+    const response = await this.fetcher(url, { headers: { accept: "application/json" }, signal: AbortSignal.timeout(8000) });
     if (!response.ok) throw new Error(`WordPress request failed: ${response.status} ${url.pathname}`);
     return collectionSchema.parse(await response.json());
   }

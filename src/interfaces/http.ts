@@ -1,6 +1,9 @@
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
 import type { AtlasService } from "../application/atlas-service";
 import { createMcpServer } from "./mcp";
+import { landing, type LandingState } from "./landing";
+import stylesheet from "./landing.css" with { type: "text" };
+import browserScript from "./atlas-browser.js" with { type: "text" };
 
 const json = (value: unknown, status = 200): Response => Response.json(value, { status, headers: { "access-control-allow-origin": "*", "cache-control": "no-store" } });
 
@@ -30,12 +33,20 @@ export function startHttpServer(service: AtlasService, port: number): ReturnType
         await server.connect(transport);
         return transport.handleRequest(request);
       }
-      if (url.pathname === "/") return new Response(landing(), { headers: { "content-type": "text/html; charset=utf-8" } });
+      if (request.method === "GET" && (url.pathname === "/" || url.pathname === "/en" || url.pathname === "/en/")) {
+        const locale = url.pathname.startsWith("/en") ? "en" : "ar";
+        const state: LandingState = { query: (url.searchParams.get("q") ?? "").trim().slice(0,200), mode: url.searchParams.get("mode") === "services" ? "services" : "all", governorate: (url.searchParams.get("governorate") ?? "").trim().slice(0,100) };
+        if (state.query.length >= 2) {
+          try { state.items = state.mode === "services" ? (await service.findServices({need:state.query, governorate:state.governorate || undefined, limit:20})).items : (await service.search({query:state.query, types:[], limit:20})).items; }
+          catch { state.error = true; }
+        }
+        return new Response(landing(locale,state), { headers: { "content-type": "text/html; charset=utf-8", "cache-control":"no-store", "content-security-policy":"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'self'", "x-content-type-options":"nosniff", "referrer-policy":"strict-origin-when-cross-origin" } });
+      }
+      if (request.method === "GET" && url.pathname === "/assets/atlas.css") return new Response(stylesheet,{headers:{"content-type":"text/css; charset=utf-8","cache-control":"public,max-age=300"}});
+      if (request.method === "GET" && url.pathname === "/assets/atlas.js") return new Response(browserScript,{headers:{"content-type":"text/javascript; charset=utf-8","cache-control":"public,max-age=300"}});
+      const assetPaths: Record<string,string> = { "/assets/open-space.webp":"public/open-space.webp", "/assets/fonts/OFL.txt":"public/fonts/OFL.txt", "/assets/fonts/Zad-Regular.woff2":"public/fonts/Zad-Regular.woff2", "/assets/fonts/Zad-Bold.woff2":"public/fonts/Zad-Bold.woff2" };
+      if (request.method === "GET" && assetPaths[url.pathname]) return new Response(Bun.file(assetPaths[url.pathname]!),{headers:{"cache-control":"public,max-age=86400"}});
       return json({ error: "not_found" }, 404);
     },
   });
-}
-
-function landing(): string {
-  return `<!doctype html><html lang="ar" dir="rtl"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>أطلس مرسى — Marsa Atlas</title><style>body{margin:0;background:#f7f5ef;color:#102e3a;font-family:system-ui;line-height:1.8}main{max-width:960px;margin:auto;padding:8vw 24px}p:first-child{font-family:monospace;color:#176071}h1{font-size:clamp(42px,8vw,92px);line-height:1.1;margin:.2em 0}section{border-top:1px solid #102e3a;margin-top:56px;padding-top:24px}code{direction:ltr;display:inline-block;background:#102e3a;color:white;padding:4px 8px}a{color:#176071}</style><main><p>MARSA / ATLAS / EGYPT</p><h1>اسأل. افحص المصدر. ابنِ الإحالة.</h1><p>بنية معلومات موثقة للخدمات والأدلة المتعلقة بالهجرة واللجوء في مصر.</p><section><h2>واجهات المنتج</h2><p><code>POST /mcp</code> Streamable HTTP</p><p><code>GET /api/v1/search?q=تعليم</code></p><p><code>GET /api/v1/services?need=تعليم</code></p><p><code>GET /api/v1/coverage</code></p></section></main></html>`;
 }

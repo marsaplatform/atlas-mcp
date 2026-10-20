@@ -107,12 +107,13 @@ export class AtlasService {
       const typeNames = types.map((type) => normalizeText(type.ar));
       items = (await this.repository.all())
         .filter(isService)
-        .filter((record) => textIncludes(haystack(record), input.need, true) || record.serviceTypes.some((label) => typeNames.includes(normalizeText(label)) || (serviceTypeOf(label) && types.includes(serviceTypeOf(label)!))))
+        .filter((record) => textIncludes(haystack(record), input.need, types.length === 0) || record.serviceTypes.some((label) => typeNames.includes(normalizeText(label)) || (serviceTypeOf(label) && types.includes(serviceTypeOf(label)!))))
         .filter((record) => !governorate || record.governorates.some((label) => sameGovernorate(label, governorate)))
         .filter((record) => !input.eligibility || record.eligibility.some((label) => textIncludes(label, input.eligibility!)))
         .slice(0, input.limit);
     }
-    if (nationality) items = items.filter((record) => record.eligibility.length === 0 || record.eligibility.some((label) => { const term = classifyEligibility(label); return term.kind === "unknown" || (term.kind === "group" && term.group !== "women" && term.group !== "children") || (term.kind === "nationality" && term.nationality.iso3 === nationality.iso3); }));
+    // Drop only services restricted to other nationalities; group conditions (women, children…) are left for the caller to judge.
+    if (nationality) items = items.filter((record) => { const terms = record.eligibility.map(classifyEligibility); const nationalTerms = terms.filter((term) => term.kind === "nationality"); return nationalTerms.length === 0 || nationalTerms.some((term) => term.kind === "nationality" && term.nationality.iso3 === nationality.iso3) || terms.some((term) => term.kind === "group" && term.group === "all"); });
     return {
       query: input.need,
       resolved: { governorate: governorate ?? null, serviceTypes: types.map((type) => ({ key: type.key, ar: type.ar, en: type.en })), nationality: nationality ? { iso3: nationality.iso3, ar: nationality.ar, en: nationality.en } : null },
@@ -299,7 +300,8 @@ export class AtlasService {
     const groups = new Set((input.groups ?? []).map(resolveGroup).filter(Boolean));
     const types = resolveNeed(input.need);
     const today = this.now().getTime();
-    const candidates = (await this.repository.all()).filter(isService).filter((service) => textIncludes(haystack(service), input.need, true) || service.serviceTypes.some((label) => { const type = serviceTypeOf(label); return type ? types.includes(type) : false; }));
+    // Match on service type when the need maps to one; free-text token matching only when it does not.
+    const candidates = (await this.repository.all()).filter(isService).filter((service) => textIncludes(haystack(service), input.need, types.length === 0) || service.serviceTypes.some((label) => { const type = serviceTypeOf(label); return type ? types.includes(type) : false; }));
     const scored = candidates.map((service) => {
       let score = 0;
       const why: string[] = [];

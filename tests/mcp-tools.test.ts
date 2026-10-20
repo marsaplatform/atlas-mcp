@@ -99,3 +99,12 @@ describe("MCP surface", () => {
     expect(prompts.map((prompt) => prompt.name).sort()).toEqual(["coverage_gaps", "referral", "research_brief"]);
   });
 });
+
+describe("referral precision", () => {
+  test("a need that maps to a service type does not pull in unrelated services", async () => {
+    const result = await client.callTool({ name: "build_referral_sheet", arguments: { need: "دعم نفسي" } });
+    const structured = result.structuredContent as { items: Array<{ service: { serviceTypes: string[] } }> };
+    expect(structured.items.length).toBeGreaterThan(0);
+    expect(structured.items.every((item) => item.service.serviceTypes.includes("دعم نفسي"))).toBe(true);
+  });
+});

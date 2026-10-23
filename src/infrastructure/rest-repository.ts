@@ -20,7 +20,7 @@ const recordSchema = z.looseObject({
   source: z.looseObject({ name: z.string(), url: z.string(), publisher: z.string(), retrievedAt: z.string() }),
   lastVerified: z.string(),
 });
-const listSchema = z.looseObject({ items: z.array(recordSchema) });
+const listSchema = z.looseObject({ items: z.array(recordSchema), total: z.number().int().nonnegative().optional() });
 const coverageSchema = z.object({ records: z.number(), byType: z.record(z.string(), z.number()), lastUpdated: z.string() });
 
 export class RestApiRepository implements AtlasRepository {
@@ -42,8 +42,13 @@ export class RestApiRepository implements AtlasRepository {
 
   async all(): Promise<AnyAtlasRecord[]> {
     if (this.cache && Date.now() - this.cache.at < this.ttlMs) return this.cache.records;
-    const data = listSchema.parse(await this.get("records", { limit: 500 }));
-    const records = data.items as unknown as AnyAtlasRecord[];
+    const records: AnyAtlasRecord[] = [];
+    for (;;) {
+      const data = listSchema.parse(await this.get("records", { limit: 500, offset: records.length }));
+      records.push(...data.items as unknown as AnyAtlasRecord[]);
+      if (data.total === undefined || records.length >= data.total) break;
+      if (data.items.length === 0) throw new Error("Atlas API pagination ended before the reported total");
+    }
     this.cache = { at: Date.now(), records };
     return records;
   }
@@ -59,7 +64,9 @@ export class RestApiRepository implements AtlasRepository {
   }
 
   async getById(id: string): Promise<AnyAtlasRecord | undefined> {
-    const cached = this.cache?.records.find((record) => record.id === id);
+    const cached = this.cache && Date.now() - this.cache.at < this.ttlMs
+      ? this.cache.records.find((record) => record.id === id)
+      : undefined;
     if (cached) return cached;
     const data = await this.get(`records/${encodeURIComponent(id)}`);
     if (data === undefined) return undefined;

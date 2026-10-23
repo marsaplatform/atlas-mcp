@@ -36,3 +36,26 @@ describe("RestApiRepository", () => {
     expect(broken.coverage()).rejects.toThrow("502");
   });
 });
+
+ test("loads every page rather than silently truncating the corpus", async () => {
+   const offsets: number[] = [];
+   const repo = new RestApiRepository("https://atlas.example.org", async (input) => {
+     const url = new URL(String(input));
+     const offset = Number(url.searchParams.get("offset"));
+     offsets.push(offset);
+     return Response.json({ total: 3, items: offset === 0 ? demo.slice(0, 2) : demo.slice(2, 3) });
+   });
+   expect((await repo.all()).length).toBe(3);
+   expect(offsets).toEqual([0, 2]);
+ });
+
+ test("expired corpus does not serve stale individual records", async () => {
+   let title = "Original";
+   const repo = new RestApiRepository("https://atlas.example.org", async (input) => {
+     const record = { ...demo[0]!, title };
+     return Response.json(String(input).includes("records?") ? { total: 1, items: [record] } : record);
+   }, -1);
+   await repo.all();
+   title = "Updated";
+   expect((await repo.getById(demo[0]!.id))?.title).toBe("Updated");
+ });

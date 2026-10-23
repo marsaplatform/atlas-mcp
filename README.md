@@ -287,3 +287,8 @@ License (`public/fonts/OFL.txt`). Code: [MIT](LICENSE). Record text belongs to i
 | **Marsa Spaces · مساحات مرسى** | نشر صفحات ثابتة بروابط عامة، وخادم MCP لكل مساحة · static publishing with a per-space MCP server | <https://spaces.marsaplatform.com> · [GitHub](https://github.com/marsaplatform/marsa) |
 
 Part of [Marsa](https://marsaplatform.com) · all projects: <https://marsaplatform.com/products>.
+
+## Repository resources · موارد المستودع
+
+- [Contributing / المساهمة](CONTRIBUTING.md)
+- [Security reporting / الإبلاغ الأمني](SECURITY.md)

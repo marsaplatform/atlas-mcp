@@ -1,5 +1,10 @@
 # Marsa Atlas MCP — أطلس مرسى
 
+![Current local application](docs/media/current-home.png)
+
+لقطة محلية بتاريخ 24 أكتوبر 2026 باستخدام بيانات العرض المرفقة؛ السجلات والأرقام توضيحية وليست دليل إتاحة للخدمات.
+
+
 > **المعلومة، ومعها المصدر.** خدمات وجهات ومراجع قانونية وبيانات الهجرة واللجوء في مصر، موثّقة بمصادرها وتاريخ التحقق، في متناول مساعدك الذكي.
 
 **Source-grounded migration services, organizations, legal references and data for Egypt — as an MCP server on Cloudflare Workers, plus the Atlas website and REST API.**

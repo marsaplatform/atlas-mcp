@@ -1,6 +1,6 @@
 {
   "name": "@marsaplatform/atlas",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Marsa Atlas MCP (أطلس مرسى) — source-grounded migration services, legal references and data for Egypt, as an MCP server on Cloudflare Workers, plus the Atlas web/REST service.",
   "type": "module",
   "license": "MIT",

@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.3.0 — 2026-11-09
+
+### Added
+- **GoRun data mode**: `ATLAS_DATA_MODE=gorun` reads records from a GoRun CMS
+  (`ATLAS_GORUN_URL` + `ATLAS_GORUN_TOKEN`). Search/filter logic shared with the
+  demo repository through a new `InMemoryRepository` base class
+  (`src/infrastructure/in-memory-repository.ts`, `gorun-repository.ts`,
+  `tests/gorun-repository.test.ts`). This is how atlas.marsaplatform.com is
+  served in production.
+- **Identity 2026**: redesigned landing experience — IBM Plex Sans Arabic and
+  Readex Pro fonts (OFL, licenses in `public/fonts/OFL.txt`), new palette,
+  brand mark, tap-to-call/WhatsApp contact blocks on results, and motion
+  (count-up, scroll reveals) that respects `prefers-reduced-motion`.
+
+### Changed
+- `DemoRepository` now extends the shared `InMemoryRepository` base.
+- `.env.example` documents the `gorun` mode and its variables.
+
 ## 0.2.0 — 2026-10-20
 
 ### Added

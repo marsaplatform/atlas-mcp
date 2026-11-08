@@ -6,7 +6,7 @@ import { canonicalGovernorate, governorates, resolvePlace, sameGovernorate } fro
 import { classifyEligibility, populationGroups, resolveGroup, resolveNationality, type PopulationGroup } from "../shared/nationalities";
 import { resolveNeed, serviceTypeOf, serviceTypes } from "../shared/needs";
 
-export const ATLAS_VERSION = "0.2.0";
+export const ATLAS_VERSION = "0.3.0";
 
 /** One citation per distinct source, carried by every tool result. */
 export interface Citation {
